@@ -1,0 +1,31 @@
+{
+  "name": "departments",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "departments/src",
+  "prefix": "nsp",
+  "tags": ["scope:departments", "type:feature"],
+  "projectType": "library",
+  "targets": {
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "departments/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["departments/**/*.ts", "departments/**/*.html"]
+      }
+    }
+  }
+}

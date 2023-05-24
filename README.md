@@ -15,8 +15,7 @@ Run `nx graph` to see a diagram of the dependencies of the projects.
 
 ## Styles
 
-This project uses [Sass](https://sass-lang.com) and [Tailwind](https://tailwindcss.com) to manage CSS styling.
-This project uses [DaisyUI](https://daisyui.com) Tailwind components as a "design system".
+This project uses [Sass](https://sass-lang.com) and [PrimeNg](https://primeng.org/) for CSS styling and components.
 
 ## Tests
 

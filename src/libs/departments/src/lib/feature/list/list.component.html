@@ -1,0 +1,44 @@
+<div *ngIf="vm$ | async as vm"
+  data-testid="departments-list"
+>
+  <div data-testid="department-list-title">
+    <h2 class="mb-6 text-2xl uppercase">
+      Departments list
+    </h2>
+  </div>
+  <div data-testid="department-list-departments">
+    <p-accordion
+      *ngFor="let department of vm.departments;"
+      class="block mb-4"
+      data-testid="department-list-department"
+    >
+      <p-accordionTab data-testid="department-list-block">
+        <ng-template pTemplate="header">
+          <h4 class="mx-3 uppercase" data-testid="department-name">
+            {{department.name}}
+          </h4>
+          <p-badge [value]="'' + department?.users?.length"></p-badge>
+        </ng-template>
+        <p-table [value]="department?.users!"
+          [tableStyle]="{ 'min-width': '50rem' }"
+          data-testid="department-users-table"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th>id</th>
+              <th>name</th>
+              <th>email</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-user>
+            <tr data-testid="department-users-table-row">
+              <td data-testid="user-id">{{ user.id }}</td>
+              <td data-testid="user-name">{{ user.name }}</td>
+              <td data-testid="user-email">{{ user.email }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-accordionTab>
+    </p-accordion>
+  </div>
+</div>
