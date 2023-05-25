@@ -11,11 +11,14 @@ import { of } from 'rxjs';
 import { TableModule } from 'primeng/table';
 import { AccordionModule } from 'primeng/accordion';
 import { BadgeModule } from 'primeng/badge';
+import { DialogService } from 'primeng/dynamicdialog';
+import { ButtonModule } from 'primeng/button';
+import { DepartmentFormComponent } from '../form/department-form.component';
 
 
-describe('PetListComponent', () => {
+describe('DepartmentsListComponent', () => {
   let spectator: Spectator<DepartmentsListComponent>;
-  let departmentsStore: SpyObject<DepartmentsStore>;
+  let dialogService: SpyObject<DialogService>;
   
   const mockDepartments = [
     {
@@ -62,20 +65,23 @@ describe('PetListComponent', () => {
     imports: [
       TableModule,
       AccordionModule,
-      BadgeModule
+      BadgeModule,
+      ButtonModule,
     ],
-    mocks: [DepartmentsStore],
+    mocks: [DialogService],
     componentProviders: [
       mockProvider(DepartmentsStore, {
         vm$: of(mockVm),
         getDepartments: jest.fn(() => of({})),
+        deleteDepartment: jest.fn(() => of({})),
       }),
     ],
   });
 
   beforeEach(() => {
     spectator = createComponent();
-    departmentsStore = spectator.inject(DepartmentsStore);
+    // departmentsStore = spectator.inject(DepartmentsStore);
+    dialogService = spectator.inject(DialogService);
   });
 
   describe('UI', () => {
@@ -88,7 +94,11 @@ describe('PetListComponent', () => {
         expect(spectator.query(byTestId('department-list-departments'))).toExist();
       });
 
-      describe('Blocks', () => {
+      it('should show the "Add department" button', () => {
+        expect(spectator.query(byTestId('department-list-add-button'))).toExist();
+      });
+
+      describe('Department block', () => {
         it('should display one block per department', () => {
           expect(spectator.queryAll(byTestId('department-list-block'))?.length).toBe(mockDepartments.length);
         });
@@ -97,6 +107,14 @@ describe('PetListComponent', () => {
           expect(
             spectator.query(byTestId('department-list-department'))?.querySelector('[data-testid="department-name"]')?.textContent
           ).toContain(mockDepartments[0].name);
+        });
+
+        it('should display the "Edit department" button', () => {
+          expect(spectator.query(byTestId('department-list-edit-button'))).toExist();
+        });
+
+        it('should display the "Delete department" button', () => {
+          expect(spectator.query(byTestId('department-list-delete-button'))).toExist();
         });
 
         it('should display the users table on each row', () => {
@@ -120,6 +138,39 @@ describe('PetListComponent', () => {
           ).toBe(mockDepartments[0].users[0].email);
         });
       });      
+    });
+
+    describe('Functionality', () => {
+      it('should open the "Add department" modal with the department', () => {
+        spectator.click(byTestId('department-list-add-button'));
+        
+        expect(dialogService.open).toHaveBeenCalledWith(DepartmentFormComponent, {
+          data: { department: undefined },
+          header: 'Add Department',
+          width: '50vw',
+          height: '50vh'
+        });
+      });
+
+      it('should open the "Edit department" modal with the department', () => {
+        spectator.click(byTestId('department-list-edit-button'));
+
+        expect(dialogService.open).toHaveBeenCalledWith(DepartmentFormComponent, {
+          data: { department: mockDepartments[0] },
+          header: 'Edit Department',
+          width: '50vw',
+          height: '50vh'
+        });
+      });
+
+      it('should delete departments', () => {
+        // @ts-expect-error - Skipping lint errors for testing purposes
+        jest.spyOn(spectator.component.departmentsStore, 'deleteDepartment').mockImplementation(() => of([]));
+        spectator.click(byTestId('department-list-delete-button'));
+
+        // @ts-expect-error - Skipping lint errors for testing purposes
+        expect(spectator.component.departmentsStore.deleteDepartment).toHaveBeenCalledWith(mockDepartments[0]);
+      });
     });
   });
 });

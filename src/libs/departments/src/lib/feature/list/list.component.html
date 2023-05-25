@@ -1,10 +1,15 @@
 <div *ngIf="vm$ | async as vm"
   data-testid="departments-list"
 >
-  <div data-testid="department-list-title">
-    <h2 class="mb-6 text-2xl uppercase">
+  <div class="mb-6 flex justify-content-between align-items-center"
+    data-testid="department-list-header">
+    <h2 class="text-2xl uppercase" data-testid="department-list-title">
       Departments list
     </h2>
+    <p-button label="Add Department"
+      (click)="openDepartmentFormDialog();"
+      data-testid="department-list-add-button">      
+    </p-button>
   </div>
   <div data-testid="department-list-departments">
     <p-accordion
@@ -14,10 +19,29 @@
     >
       <p-accordionTab data-testid="department-list-block">
         <ng-template pTemplate="header">
-          <h4 class="mx-3 uppercase" data-testid="department-name">
-            {{department.name}}
-          </h4>
-          <p-badge [value]="'' + department?.users?.length"></p-badge>
+          <div class="flex-grow-1 flex gap-4 align-items-center">
+            <h4 class="mx-3 uppercase" data-testid="department-name">
+              {{department.name}}
+            </h4>
+            <p-badge [value]="'' + department?.users?.length"></p-badge>
+            <div class="ml-auto" data-testid="department-list-department-buttons">
+              <p-button
+                label="Edit"
+                class="mr-2"
+                icon="pi pi-check"
+                (click)="openDepartmentFormDialog(department);"
+                data-testid="department-list-edit-button"
+              >
+              </p-button>
+              <p-button
+                label="Delete"
+                icon="pi pi-check"
+                (click)="deleteDepartment(department);"
+                data-testid="department-list-delete-button"
+              >
+              </p-button>
+            </div>            
+          </div>
         </ng-template>
         <p-table [value]="department?.users!"
           [tableStyle]="{ 'min-width': '50rem' }"
@@ -42,3 +66,4 @@
     </p-accordion>
   </div>
 </div>
+

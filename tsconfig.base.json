@@ -15,10 +15,10 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@nsp/departments": ["src/libs/departments/src/index.ts"],
       "@nsp/shared/data-access/in-memory-web-api": [
         "src/libs/shared/data-access/in-memory-web-api/src/index.ts"
-      ],
-      "@nsp/departments": ["src/libs/departments/src/index.ts"]
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]
