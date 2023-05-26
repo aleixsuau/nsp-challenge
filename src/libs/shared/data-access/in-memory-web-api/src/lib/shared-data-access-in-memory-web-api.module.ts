@@ -9,7 +9,7 @@ import { InMemoryWebApiService } from './data-access/in-memory-web-api/in-memory
     CommonModule,
     environment.production ? 
       [] :
-      HttpClientInMemoryWebApiModule.forRoot(InMemoryWebApiService, { delay: 100 })
+      HttpClientInMemoryWebApiModule.forRoot(InMemoryWebApiService, { delay: 1000 })
   ],
 })
 export class SharedDataAccessInMemoryWebApiModule {}

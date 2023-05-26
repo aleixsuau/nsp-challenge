@@ -1,15 +1,16 @@
 import { FormControl } from "@angular/forms";
 
 export interface DepartmentsState {
+  users: UsersMap;
   departments: Department[];
   loading: boolean;
   error?: string;
 }
 
 export interface Department {
-  id?: number;
+  id: number;
   name: string;
-  users: User[];
+  users: number[];
 }
 
 export interface User {
@@ -19,7 +20,11 @@ export interface User {
 }
 
 export interface DepartmentForm {
-  id?: FormControl<Department['id']>;
+  id?: FormControl<number | undefined>;
   name: FormControl<Department['name']>;
   users: FormControl<Department['users']>;
+}
+
+export interface UsersMap {
+  [key: number]: User[];
 }

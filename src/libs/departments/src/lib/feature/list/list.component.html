@@ -7,7 +7,7 @@
       Departments list
     </h2>
     <p-button label="Add Department"
-      (click)="openDepartmentFormDialog();"
+      (click)="openDepartmentFormDialog($event);"
       data-testid="department-list-add-button">      
     </p-button>
   </div>
@@ -16,6 +16,7 @@
       *ngFor="let department of vm.departments;"
       class="block mb-4"
       data-testid="department-list-department"
+      (click)="getDepartmentUsers(department);"
     >
       <p-accordionTab data-testid="department-list-block">
         <ng-template pTemplate="header">
@@ -29,23 +30,25 @@
                 label="Edit"
                 class="mr-2"
                 icon="pi pi-check"
-                (click)="openDepartmentFormDialog(department);"
+                (click)="openDepartmentFormDialog($event, department);"
                 data-testid="department-list-edit-button"
               >
               </p-button>
               <p-button
                 label="Delete"
                 icon="pi pi-check"
-                (click)="deleteDepartment(department);"
+                (click)="deleteDepartment($event, department);"
                 data-testid="department-list-delete-button"
               >
               </p-button>
             </div>            
           </div>
         </ng-template>
-        <p-table [value]="department?.users!"
+        <p-table 
+          [value]="vm.users[department.id]"
           [tableStyle]="{ 'min-width': '50rem' }"
           data-testid="department-users-table"
+          *ngIf="vm.users[department.id]; else usersSpinner;"
         >
           <ng-template pTemplate="header">
             <tr>
@@ -62,8 +65,12 @@
             </tr>
           </ng-template>
         </p-table>
+        <ng-template #usersSpinner>
+          <div class="flex justify-content-center">
+            <p-progressSpinner styleClass="w-4rem h-4rem"></p-progressSpinner>
+          </div>
+        </ng-template>
       </p-accordionTab>
     </p-accordion>
   </div>
 </div>
-

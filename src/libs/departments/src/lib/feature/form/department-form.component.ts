@@ -38,11 +38,11 @@ export class DepartmentFormComponent implements OnInit {
     // event.query
   }
 
-  saveDepartment(department: Department) {
+  saveDepartment(department: Partial<Department> | Department) {
     if (department.id) {      
-      this.departmentsStore.updateDepartment(department);
+      this.departmentsStore.updateDepartment(department as Department);
     } else {
-      this.departmentsStore.addDepartment(department);
+      this.departmentsStore.addDepartment(department as Partial<Department>);
     }
     this.dynamicDialogRef.close();
   }

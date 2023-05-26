@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
-import { Department } from '../../typings';
+import { Department, User } from '../../typings';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +17,7 @@ export class DepartmentsService {
     return this.httpClient.get<Department[]>(this.endpoint);
   }
 
-  add(department: Department): Observable<Department> {
+  add(department: Partial<Department>): Observable<Department> {
     return this.httpClient.post<Department>(this.endpoint, department);
   }
 
@@ -28,5 +28,9 @@ export class DepartmentsService {
 
   delete(department: Department): Observable<void> {
     return this.httpClient.delete<void>(`${this.endpoint}/${department.id}`);
+  }
+
+  getUsers(department: Department): Observable<User[]>{
+    return this.httpClient.get<User[]>(`${this.endpoint}/${department.id}/users`);
   }
 }

@@ -23,7 +23,9 @@ export class DepartmentsListComponent {
     public dialogService: DialogService,
   ){}
 
-  openDepartmentFormDialog(department?: Department) {
+  openDepartmentFormDialog(event: MouseEvent, department?: Department) {
+    event.stopPropagation();
+
     this.departmentFormDialogRef = this.dialogService.open(DepartmentFormComponent, {
       data: { department },
       header: `${department?.id ? 'Edit Department' : 'Add Department'}`,
@@ -32,7 +34,13 @@ export class DepartmentsListComponent {
     })
   }
 
-  deleteDepartment(department: Department) {
+  deleteDepartment(event: MouseEvent, department: Department) {
+    event.stopPropagation();
+
     this.departmentsStore.deleteDepartment(department);
+  }
+
+  getDepartmentUsers(department: Department) {
+    this.departmentsStore.getUsers(department);
   }
 }

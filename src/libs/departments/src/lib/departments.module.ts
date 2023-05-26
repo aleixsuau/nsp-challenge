@@ -12,6 +12,7 @@ import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { InputTextModule } from 'primeng/inputtext';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @NgModule({
   imports: [
@@ -25,6 +26,7 @@ import { InputTextModule } from 'primeng/inputtext';
     ReactiveFormsModule,
     AutoCompleteModule,
     InputTextModule,
+    ProgressSpinnerModule,
   ],
   declarations: [DepartmentsListComponent, DepartmentFormComponent],
 })

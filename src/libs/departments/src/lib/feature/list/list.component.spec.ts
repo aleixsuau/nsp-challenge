@@ -14,7 +14,7 @@ import { BadgeModule } from 'primeng/badge';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ButtonModule } from 'primeng/button';
 import { DepartmentFormComponent } from '../form/department-form.component';
-
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 describe('DepartmentsListComponent', () => {
   let spectator: Spectator<DepartmentsListComponent>;
@@ -54,10 +54,25 @@ describe('DepartmentsListComponent', () => {
       ]
     }
   ];
+  const mockUsers = [
+    {
+      "id": 1,
+      "name": "John Doe",
+      "email": "johndoe@company.com"
+    },
+    {
+      "id": 2,
+      "name": "Jane Smith",
+      "email": "janesmith@company.com"
+    },
+  ];
   const mockVm = {
     departments: mockDepartments,
     loading: false,
-    error: null
+    error: null,
+    users: {
+      1: mockUsers
+    },
   };
 
   const createComponent = createComponentFactory({
@@ -67,6 +82,7 @@ describe('DepartmentsListComponent', () => {
       AccordionModule,
       BadgeModule,
       ButtonModule,
+      ProgressSpinnerModule,
     ],
     mocks: [DialogService],
     componentProviders: [
@@ -74,6 +90,7 @@ describe('DepartmentsListComponent', () => {
         vm$: of(mockVm),
         getDepartments: jest.fn(() => of({})),
         deleteDepartment: jest.fn(() => of({})),
+        getUsers: jest.fn(() => of({})),
       }),
     ],
   });
@@ -117,14 +134,19 @@ describe('DepartmentsListComponent', () => {
           expect(spectator.query(byTestId('department-list-delete-button'))).toExist();
         });
 
-        it('should display the users table on each row', () => {
+        it('should display the users table when the block is open and has users', () => {
           expect(spectator.query(byTestId('department-users-table'))).toExist();
           expect(
             spectator.query(byTestId('department-users-table'))?.querySelectorAll('[data-testid="department-users-table-row"]').length
           ).toBe(mockDepartments[0].users.length);
+
+          // The second department (mockDepartments[1]) has no users
+          expect(
+            spectator.queryAll(byTestId('department-users-table'))[1]?.querySelectorAll('[data-testid="department-users-table"]')
+          ).not.toExist();
         });
 
-        it('should display the user data on each row', () => {
+        it('should display the user data on each row if users', () => {
           const userRow = spectator.query(byTestId('department-users-table'));
 
           expect(
@@ -139,38 +161,45 @@ describe('DepartmentsListComponent', () => {
         });
       });      
     });
+  });
 
-    describe('Functionality', () => {
-      it('should open the "Add department" modal with the department', () => {
-        spectator.click(byTestId('department-list-add-button'));
-        
-        expect(dialogService.open).toHaveBeenCalledWith(DepartmentFormComponent, {
-          data: { department: undefined },
-          header: 'Add Department',
-          width: '50vw',
-          height: '50vh'
-        });
+  describe('Functionality', () => {
+    it('should open the "Add department" modal with the department', () => {
+      spectator.click(byTestId('department-list-add-button'));
+
+      expect(dialogService.open).toHaveBeenCalledWith(DepartmentFormComponent, {
+        data: { department: undefined },
+        header: 'Add Department',
+        width: '50vw',
+        height: '50vh'
       });
+    });
 
-      it('should open the "Edit department" modal with the department', () => {
-        spectator.click(byTestId('department-list-edit-button'));
+    it('should open the "Edit department" modal with the department', () => {
+      spectator.click(byTestId('department-list-edit-button'));
 
-        expect(dialogService.open).toHaveBeenCalledWith(DepartmentFormComponent, {
-          data: { department: mockDepartments[0] },
-          header: 'Edit Department',
-          width: '50vw',
-          height: '50vh'
-        });
+      expect(dialogService.open).toHaveBeenCalledWith(DepartmentFormComponent, {
+        data: { department: mockDepartments[0] },
+        header: 'Edit Department',
+        width: '50vw',
+        height: '50vh'
       });
+    });
 
-      it('should delete departments', () => {
-        // @ts-expect-error - Skipping lint errors for testing purposes
-        jest.spyOn(spectator.component.departmentsStore, 'deleteDepartment').mockImplementation(() => of([]));
-        spectator.click(byTestId('department-list-delete-button'));
+    it('should delete departments', () => {
+      // @ts-expect-error - Skipping lint errors for testing purposes
+      jest.spyOn(spectator.component.departmentsStore, 'deleteDepartment').mockImplementation(() => of([]));
+      spectator.click(byTestId('department-list-delete-button'));
 
-        // @ts-expect-error - Skipping lint errors for testing purposes
-        expect(spectator.component.departmentsStore.deleteDepartment).toHaveBeenCalledWith(mockDepartments[0]);
-      });
+      // @ts-expect-error - Skipping lint errors for testing purposes
+      expect(spectator.component.departmentsStore.deleteDepartment).toHaveBeenCalledWith(mockDepartments[0]);
+    });
+
+    it('should get the users of the department when it is opened', () => {
+      spectator.click(byTestId('department-list-department'));
+
+      // @ts-expect-error - Skipping lint errors for testing purposes
+      expect(spectator.component.departmentsStore.getUsers).toHaveBeenCalledWith(mockDepartments[0]);
     });
   });
 });

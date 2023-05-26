@@ -2,7 +2,6 @@ import { createServiceFactory, SpectatorService, mockProvider } from '@ngneat/sp
 import { DepartmentsStore } from './departments.store';
 import { DepartmentsService } from './departments.service';
 import { of, throwError } from 'rxjs';
-import { fakeAsync, tick } from '@angular/core/testing';
 
 describe('DepartmentsStore', () => {
   let spectator: SpectatorService<DepartmentsStore>;
@@ -10,34 +9,12 @@ describe('DepartmentsStore', () => {
     {
       "id": 1,
       "name": "Marketing",
-      "users": [
-        {
-          "id": 1,
-          "name": "John Doe",
-          "email": "johndoe@company.com"
-        },
-        {
-          "id": 2,
-          "name": "Jane Smith",
-          "email": "janesmith@company.com"
-        },
-      ]
+      "users": [1, 2]
     },
     {
       "id": 2,
       "name": "Sales",
-      "users": [
-        {
-          "id": 3,
-          "name": "Bob Johnson",
-          "email": "bobjohnson@company.com"
-        },
-        {
-          "id": 4,
-          "name": "Alice Brown",
-          "email": "alicebrown@company.com"
-        }
-      ]
+      "users": [3, 4]
     }
   ];
   const newDepartment = {
@@ -48,6 +25,18 @@ describe('DepartmentsStore', () => {
     ...mockDepartments[0],
     name: 'UpdatedName'
   };
+  const mockUsers = [
+    {
+      "id": 1,
+      "name": "John Doe",
+      "email": "johndoe@company.com"
+    },
+    {
+      "id": 2,
+      "name": "Jane Smith",
+      "email": "janesmith@company.com"
+    },
+  ];
   const mockVm = {
     departments: mockDepartments,
     loading: false,
@@ -62,7 +51,8 @@ describe('DepartmentsStore', () => {
           get: jest.fn(() => of(mockDepartments)),
           add: jest.fn(() => of(newDepartment)),
           update: jest.fn(() => of(updatedDepartment)),
-          delete: jest.fn(() => of(updatedDepartment))
+          delete: jest.fn(() => of(updatedDepartment)),
+          getUsers: jest.fn(() => of(mockUsers)),
         }
       ),
     ]
@@ -180,11 +170,41 @@ describe('DepartmentsStore', () => {
         expect(spectator.service.deleteOneUpdater).toHaveBeenCalledWith(mockDepartments[0]);
       });
 
-      it('should delete the error state', () => {
+      it('should update the error state', () => {
         // @ts-expect-error - Skipping lint errors for testing purposes
         jest.spyOn(spectator.service.departmentsService, 'delete').mockImplementation(() => throwError({ message: 'Horror' }));
 
         spectator.service.deleteDepartment(newDepartment);
+
+        expect(spectator.service.patchState).toHaveBeenCalledWith({ loading: true });
+        expect(spectator.service.patchState).toHaveBeenCalledWith({ error: 'Horror', loading: false });
+      });
+    });
+
+    describe('getUsers', () => {
+      it('should get users', () => {
+        spectator.service.getUsers(mockDepartments[0]);
+
+        // @ts-expect-error - Skipping lint errors for testing purposes
+        expect(spectator.service.departmentsService.getUsers).toHaveBeenCalled();
+      });
+
+      it('should update the users state', () => {
+        // @ts-expect-error - Skipping lint errors for testing purposes
+        jest.spyOn(spectator.service, 'updateUsersUpdater');
+
+        spectator.service.getUsers(mockDepartments[0]);
+
+        expect(spectator.service.patchState).toHaveBeenCalledWith({ loading: true });
+        // @ts-expect-error - Skipping lint errors for testing purposes
+        expect(spectator.service.updateUsersUpdater).toHaveBeenCalledWith({ [mockDepartments[0].id]: mockUsers });
+      });
+
+      it('should update the error state', () => {
+        // @ts-expect-error - Skipping lint errors for testing purposes
+        jest.spyOn(spectator.service.departmentsService, 'getUsers').mockImplementation(() => throwError({ message: 'Horror' }));
+
+        spectator.service.getUsers(mockDepartments[0]);
 
         expect(spectator.service.patchState).toHaveBeenCalledWith({ loading: true });
         expect(spectator.service.patchState).toHaveBeenCalledWith({ error: 'Horror', loading: false });
