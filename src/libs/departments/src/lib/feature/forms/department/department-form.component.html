@@ -10,22 +10,6 @@
       class="mb-3"
       data-testid="department-form-name"
     />
-
-    <label htmlFor="users">Users</label>
-    <span class="p-fluid mb-3">
-      <p-autoComplete
-        id="users"
-        formControlName="users"
-        [suggestions]="userSuggestions"
-        (completeMethod)="filterUsers($event)"
-        field="name"
-        [multiple]="true"
-        aria-describedby="department-users"
-        data-testid="department-form-users"
-      >
-      </p-autoComplete>
-    </span>
-
     <p-button [label]="departmentForm.value.id ? 'Update' : 'Add'"
       (click)="saveDepartment(departmentForm.getRawValue())"
       data-testid="department-form-submit"

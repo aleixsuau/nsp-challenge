@@ -1,4 +1,3 @@
-import { DepartmentsStore } from './../../data-access/departments/departments.store';
 import {
   Spectator,
   SpyObject,
@@ -6,13 +5,11 @@ import {
   createComponentFactory,
   mockProvider,
 } from '@ngneat/spectator/jest';
-import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { DepartmentFormComponent } from '../form/department-form.component';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DepartmentFormComponent } from './department-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
-import { AutoCompleteModule } from 'primeng/autocomplete';
-import { of } from 'rxjs';
-import { fakeAsync, tick } from '@angular/core/testing';
+import { DepartmentsStore } from '../../../data-access/departments/departments.store';
 
 
 describe('DepartmentFormComponent', () => {
@@ -42,7 +39,6 @@ describe('DepartmentFormComponent', () => {
     imports: [
       ReactiveFormsModule,
       ButtonModule,
-      AutoCompleteModule,
     ],
     mocks: [DynamicDialogRef],
     providers: [

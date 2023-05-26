@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { DepartmentsStore } from '../../data-access/departments/departments.store';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { DepartmentFormComponent } from '../form/department-form.component';
-import { Department } from '../../typings';
+import { DialogService } from 'primeng/dynamicdialog';
+import { Department, User, UsersMap } from '../../typings';
+import { DepartmentFormComponent } from '../forms/department/department-form.component';
+import { UserFormComponent } from '../forms/user/user-form.component';
 
 @Component({
   selector: 'nsp-departments-list',
@@ -16,7 +17,6 @@ import { Department } from '../../typings';
 })
 export class DepartmentsListComponent {
   vm$ = this.departmentsStore.vm$;
-  departmentFormDialogRef?: DynamicDialogRef;
 
   constructor(
     private readonly departmentsStore: DepartmentsStore,
@@ -26,12 +26,11 @@ export class DepartmentsListComponent {
   openDepartmentFormDialog(event: MouseEvent, department?: Department) {
     event.stopPropagation();
 
-    this.departmentFormDialogRef = this.dialogService.open(DepartmentFormComponent, {
+    this.dialogService.open(DepartmentFormComponent, {
       data: { department },
       header: `${department?.id ? 'Edit Department' : 'Add Department'}`,
       width: '50vw',
-      height: '50vh'
-    })
+    });
   }
 
   deleteDepartment(event: MouseEvent, department: Department) {
@@ -42,5 +41,25 @@ export class DepartmentsListComponent {
 
   getDepartmentUsers(department: Department) {
     this.departmentsStore.getUsers(department);
+  }
+
+  openUserFormDialog(departments: Department[], department?: Department, user?: User) {
+    this.dialogService.open(UserFormComponent, {
+      data: { 
+        user,
+        department,
+        departments,
+      },
+      header: `${user?.id ? 'Edit User' : 'Add User'}`,
+      width: '50vw',
+    });
+  }
+
+  deleteUser(department: Department, user: User) {
+    this.departmentsStore.deleteUser({ department, user });
+  }
+
+  getCountBadgeValue(department: Department, users: UsersMap): string {
+    return `${users?.[department.id]?.length != null ? users?.[department.id]?.length : department?.users?.length}`;
   }
 }

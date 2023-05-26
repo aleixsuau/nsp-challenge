@@ -13,8 +13,8 @@ import { AccordionModule } from 'primeng/accordion';
 import { BadgeModule } from 'primeng/badge';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ButtonModule } from 'primeng/button';
-import { DepartmentFormComponent } from '../form/department-form.component';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { DepartmentFormComponent } from '../forms/department/department-form.component';
 
 describe('DepartmentsListComponent', () => {
   let spectator: Spectator<DepartmentsListComponent>;
@@ -171,7 +171,6 @@ describe('DepartmentsListComponent', () => {
         data: { department: undefined },
         header: 'Add Department',
         width: '50vw',
-        height: '50vh'
       });
     });
 
@@ -182,7 +181,6 @@ describe('DepartmentsListComponent', () => {
         data: { department: mockDepartments[0] },
         header: 'Edit Department',
         width: '50vw',
-        height: '50vh'
       });
     });
 
@@ -196,7 +194,7 @@ describe('DepartmentsListComponent', () => {
     });
 
     it('should get the users of the department when it is opened', () => {
-      spectator.click(byTestId('department-list-department'));
+      spectator.click(byTestId('department-list-block-header'));
 
       // @ts-expect-error - Skipping lint errors for testing purposes
       expect(spectator.component.departmentsStore.getUsers).toHaveBeenCalledWith(mockDepartments[0]);

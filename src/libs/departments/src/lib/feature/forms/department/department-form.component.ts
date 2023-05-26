@@ -1,9 +1,8 @@
-import { DepartmentsStore } from './../../data-access/departments/departments.store';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { AutoCompleteCompleteEvent } from 'primeng/autocomplete';
-import { Department, DepartmentForm } from '../../typings';
 import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/dynamicdialog';
+import { DepartmentsStore } from '../../../data-access/departments/departments.store';
+import { DepartmentForm, Department } from '../../../typings';
 
 @Component({
   selector: 'nsp-department-form',
@@ -32,10 +31,6 @@ export class DepartmentFormComponent implements OnInit {
     if (departmentToEdit) {
       this.departmentForm.setValue(departmentToEdit);
     }
-  }
-
-  filterUsers(event: AutoCompleteCompleteEvent) {
-    // event.query
   }
 
   saveDepartment(department: Partial<Department> | Department) {

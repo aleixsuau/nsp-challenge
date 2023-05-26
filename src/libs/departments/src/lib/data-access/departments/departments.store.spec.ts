@@ -100,13 +100,13 @@ describe('DepartmentsStore', () => {
 
       it('should update the departments state', () => {
         // @ts-expect-error - Skipping lint errors for testing purposes
-        jest.spyOn(spectator.service, 'addOneUpdater');
+        jest.spyOn(spectator.service, 'addOneDepartmentUpdater');
 
         spectator.service.addDepartment(newDepartment);
 
         expect(spectator.service.patchState).toHaveBeenCalledWith({ loading: true });
         // @ts-expect-error - Skipping lint errors for testing purposes
-        expect(spectator.service.addOneUpdater).toHaveBeenCalledWith(newDepartment);
+        expect(spectator.service.addOneDepartmentUpdater).toHaveBeenCalledWith(newDepartment);
       });
 
       it('should update the error state', () => {
@@ -131,13 +131,13 @@ describe('DepartmentsStore', () => {
 
       it('should update the departments state', () => {
         // @ts-expect-error - Skipping lint errors for testing purposes
-        jest.spyOn(spectator.service, 'updateOneUpdater');
+        jest.spyOn(spectator.service, 'updateOneDepartmentUpdater');
 
         spectator.service.updateDepartment(updatedDepartment);
 
         expect(spectator.service.patchState).toHaveBeenCalledWith({ loading: true });        
         // @ts-expect-error - Skipping lint errors for testing purposes
-        expect(spectator.service.updateOneUpdater).toHaveBeenCalledWith(updatedDepartment);
+        expect(spectator.service.updateOneDepartmentUpdater).toHaveBeenCalledWith(updatedDepartment);
       });
 
       it('should update the error state', () => {
@@ -161,13 +161,13 @@ describe('DepartmentsStore', () => {
 
       it('should delete the departments state', () => {
         // @ts-expect-error - Skipping lint errors for testing purposes
-        jest.spyOn(spectator.service, 'deleteOneUpdater');
+        jest.spyOn(spectator.service, 'deleteOneDepartmentUpdater');
 
         spectator.service.deleteDepartment(mockDepartments[0]);
 
         expect(spectator.service.patchState).toHaveBeenCalledWith({ loading: true });
         // @ts-expect-error - Skipping lint errors for testing purposes
-        expect(spectator.service.deleteOneUpdater).toHaveBeenCalledWith(mockDepartments[0]);
+        expect(spectator.service.deleteOneDepartmentUpdater).toHaveBeenCalledWith(mockDepartments[0]);
       });
 
       it('should update the error state', () => {

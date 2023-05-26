@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { pipe, switchMap, tap } from 'rxjs';
+import { mergeMap, pipe, switchMap, tap } from 'rxjs';
 import { ComponentStore, tapResponse } from '@ngrx/component-store';
 import { DepartmentsService } from './departments.service';
 import { Department, DepartmentsState, User } from '../../typings';
@@ -51,7 +51,7 @@ export class DepartmentsStore extends ComponentStore<DepartmentsState> {
       tap(() => this.patchState({ loading: true })),
       switchMap((department) => this.departmentsService.add(department).pipe(
         tapResponse(
-          (updatedDepartment) => this.addOneUpdater(updatedDepartment),
+          (updatedDepartment) => this.addOneDepartmentUpdater(updatedDepartment),
           (error: Error) =>
             this.patchState({ error: error.message, loading: false })
         )
@@ -64,7 +64,7 @@ export class DepartmentsStore extends ComponentStore<DepartmentsState> {
       tap(() => this.patchState({ loading: true })),
       switchMap((department) => this.departmentsService.update(department).pipe(
         tapResponse(
-          () => this.updateOneUpdater(department),
+          () => this.updateOneDepartmentUpdater(department),
           (error: Error) =>
             this.patchState({ error: error.message, loading: false })
         )
@@ -77,7 +77,7 @@ export class DepartmentsStore extends ComponentStore<DepartmentsState> {
       tap(() => this.patchState({ loading: true })),
       switchMap((department) => this.departmentsService.delete(department).pipe(
         tapResponse(
-          () => this.deleteOneUpdater(department),
+          () => this.deleteOneDepartmentUpdater(department),
           (error: Error) =>
             this.patchState({ error: error.message, loading: false })
         )
@@ -88,7 +88,7 @@ export class DepartmentsStore extends ComponentStore<DepartmentsState> {
   readonly getUsers = this.effect<Department>(
     pipe(
       tap(() => this.patchState({ loading: true })),
-      switchMap((department) => this.departmentsService.getUsers(department).pipe(
+      mergeMap((department) => this.departmentsService.getUsers(department).pipe(
         tapResponse(
           (users) => this.updateUsersUpdater({[department.id!]: users }),
           (error: Error) =>
@@ -98,35 +98,78 @@ export class DepartmentsStore extends ComponentStore<DepartmentsState> {
     )
   );
 
-  private readonly addOneUpdater = this.updater((state, department: Department) => ({
+  readonly addUser = this.effect<{ department: Department, user: Partial<User>}>(
+    pipe(
+      tap(() => this.patchState({ loading: true })),
+      switchMap(({ department, user }) => this.departmentsService.addUser(department, user).pipe(
+        tapResponse(
+          () => this.getUsers(department),
+          (error: Error) =>
+            this.patchState({ error: error.message, loading: false })
+        )
+      ))
+    )
+  );
+
+  readonly updateUser = this.effect<{ department: Department, user: User, previousDepartment?: Department }>(
+    pipe(
+      tap(() => this.patchState({ loading: true })),
+      switchMap(({ department, user, previousDepartment }) => this.departmentsService.updateUser(department, user).pipe(        
+        tapResponse(
+          () => {
+            this.getUsers(department);
+
+            if (previousDepartment) {
+              this.getUsers(previousDepartment);
+            }
+          },
+          (error: Error) => this.patchState({ error: error.message, loading: false })            
+        )
+      ))
+    )
+  );
+
+  readonly deleteUser = this.effect<{ department: Department, user: User }>(
+    pipe(
+      tap(() => this.patchState({ loading: true })),
+      switchMap(({ department, user }) => this.departmentsService.deleteUser(department, user).pipe(
+        tapResponse(
+          () => this.getUsers(department),
+          (error: Error) => this.patchState({ error: error.message, loading: false })
+        )
+      ))
+    )
+  );
+
+  private readonly addOneDepartmentUpdater = this.updater((state, department: Department) => ({
     ...state,
     error: undefined,
     loading: false,
     departments: [department, ...state.departments],
   }));
 
-  private readonly updateOneUpdater = this.updater((state, updatedDepartment: Department) => ({
+  private readonly updateOneDepartmentUpdater = this.updater((state, updatedDepartment: Department) => ({
     ...state,
     error: undefined,
     loading: false,
     departments: state.departments.map((department) => (department.id === updatedDepartment.id ? { ...updatedDepartment } : department)),
   }));
 
-  private readonly deleteOneUpdater = this.updater((state, departmentToDelete: Department) => ({
+  private readonly deleteOneDepartmentUpdater = this.updater((state, departmentToDelete: Department) => ({
     ...state,
     error: undefined,
     loading: false,
     departments: state.departments.filter((department) => (department.id !== departmentToDelete.id)),
   }));
 
-  private readonly updateUsersUpdater = this.updater((state, users: { [key: number]: User[] }) => {
+  private readonly updateUsersUpdater = this.updater((state, departmentUsers: { [key: number]: User[] }) => {
     return ({
       ...state,
       error: undefined,
       loading: false,
       users: {
         ...state.users,
-        ...users,
+        ...departmentUsers,
       },
     })
   });

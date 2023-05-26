@@ -28,3 +28,9 @@ export interface DepartmentForm {
 export interface UsersMap {
   [key: number]: User[];
 }
+
+export interface UserForm {
+  id?: FormControl<number | undefined>;
+  name: FormControl<User['name']>;
+  email: FormControl<User['email']>;
+}

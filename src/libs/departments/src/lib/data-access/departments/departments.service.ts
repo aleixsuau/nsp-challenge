@@ -33,4 +33,16 @@ export class DepartmentsService {
   getUsers(department: Department): Observable<User[]>{
     return this.httpClient.get<User[]>(`${this.endpoint}/${department.id}/users`);
   }
+
+  addUser(department: Department, user: Partial<User>): Observable<User> {
+    return this.httpClient.post<User>(`${this.endpoint}/${department.id}/users`, user);
+  }
+
+  updateUser(department: Department, user: User): Observable<User> {
+    return this.httpClient.put<User>(`${this.endpoint}/${department.id}/users/${user.id}`, user);
+  }
+
+  deleteUser(department: Department, user: User): Observable<void> {
+    return this.httpClient.delete<void>(`${this.endpoint}/${department.id}/users/${user.id}`);
+  }
 }

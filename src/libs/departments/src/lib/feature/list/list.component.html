@@ -1,70 +1,128 @@
 <div *ngIf="vm$ | async as vm"
   data-testid="departments-list"
 >
-  <div class="mb-6 flex justify-content-between align-items-center"
+  <div class="flex justify-content-between align-items-center"
     data-testid="department-list-header">
     <h2 class="text-2xl uppercase" data-testid="department-list-title">
       Departments list
     </h2>
-    <p-button label="Add Department"
+    <button label="Add Department"
+      pButton
       (click)="openDepartmentFormDialog($event);"
-      data-testid="department-list-add-button">      
-    </p-button>
+      data-testid="department-list-add-button"
+      icon="pi pi-plus-circle"
+    >      
+    </button>
   </div>
-  <div data-testid="department-list-departments">
+  <div [ngStyle]="{ height: '6px' }">
+    <p-progressBar
+      mode="indeterminate"
+      [style]="{ height: '6px' }"
+      *ngIf="vm.loading"
+    >
+    </p-progressBar>
+  </div>
+  <div data-testid="department-list-departments"
+    class="mt-6">
     <p-accordion
       *ngFor="let department of vm.departments;"
       class="block mb-4"
       data-testid="department-list-department"
-      (click)="getDepartmentUsers(department);"
     >
       <p-accordionTab data-testid="department-list-block">
         <ng-template pTemplate="header">
-          <div class="flex-grow-1 flex gap-4 align-items-center">
+          <div 
+            class="flex-grow-1 flex gap-4 align-items-center"
+            (click)="getDepartmentUsers(department);"
+            data-testid="department-list-block-header"
+          >
             <h4 class="mx-3 uppercase" data-testid="department-name">
               {{department.name}}
             </h4>
-            <p-badge [value]="'' + department?.users?.length"></p-badge>
+            <p-badge [value]="getCountBadgeValue(department, vm.users)"></p-badge>
             <div class="ml-auto" data-testid="department-list-department-buttons">
-              <p-button
+              <button
+                pButton
                 label="Edit"
-                class="mr-2"
-                icon="pi pi-check"
                 (click)="openDepartmentFormDialog($event, department);"
+                class="mr-2"
+                styleClass="p-button-sm"
                 data-testid="department-list-edit-button"
+                icon="pi pi-file-edit"
               >
-              </p-button>
-              <p-button
+              </button>
+              <button
+                pButton
                 label="Delete"
-                icon="pi pi-check"
                 (click)="deleteDepartment($event, department);"
+                styleClass="p-button-sm"
                 data-testid="department-list-delete-button"
+                icon="pi pi-trash"
               >
-              </p-button>
-            </div>            
+            </button>
+            </div>     
           </div>
         </ng-template>
-        <p-table 
-          [value]="vm.users[department.id]"
-          [tableStyle]="{ 'min-width': '50rem' }"
-          data-testid="department-users-table"
-          *ngIf="vm.users[department.id]; else usersSpinner;"
-        >
-          <ng-template pTemplate="header">
-            <tr>
-              <th>id</th>
-              <th>name</th>
-              <th>email</th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-user>
-            <tr data-testid="department-users-table-row">
-              <td data-testid="user-id">{{ user.id }}</td>
-              <td data-testid="user-name">{{ user.name }}</td>
-              <td data-testid="user-email">{{ user.email }}</td>
-            </tr>
-          </ng-template>
-        </p-table>
+        <ng-container *ngIf="vm.users[department.id]; else usersSpinner;">
+          <p-table
+            [value]="vm.users[department.id]"          
+            data-testid="department-users-table"
+          >
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Edit</th>
+                <th>Delete</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-user>
+              <tr data-testid="department-users-table-row">
+                <td data-testid="user-id">{{ user.id }}</td>
+                <td data-testid="user-name">{{ user.name }}</td>
+                <td data-testid="user-email">{{ user.email }}</td>
+                <td data-testid="user-edit">
+                  <button
+                    pButton
+                    label="Edit"
+                    (click)="openUserFormDialog(vm.departments, department, user);"
+                    class="p-button-success mr-2"
+                    styleClass="p-button-sm"
+                    data-testid="department-list-user-edit-button"
+                    icon="pi pi-file-edit"
+                  >
+                    <i class="pi pi-edit"></i>
+                  </button>
+                </td>
+                <td data-testid="user-delete">
+                  <button
+                    pButton
+                    label="Delete"
+                    (click)="deleteUser(department, user);"
+                    class="p-button-warning"
+                    styleClass="p-button-sm"
+                    data-testid="department-list-user-delete-button"
+                    icon="pi pi-trash"                 
+                  >
+                  </button>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+          <div class="flex justify-content-end mt-4">
+            <button
+              pButton
+              label="Add user"
+              (click)="openUserFormDialog(vm.departments, department);"
+              styleClass="p-button-sm"
+              class="p-button-success"
+              data-testid="department-list-user-add-button"
+              icon="pi pi-plus-circle"
+            >
+            </button>
+          </div>     
+        </ng-container>
         <ng-template #usersSpinner>
           <div class="flex justify-content-center">
             <p-progressSpinner styleClass="w-4rem h-4rem"></p-progressSpinner>
