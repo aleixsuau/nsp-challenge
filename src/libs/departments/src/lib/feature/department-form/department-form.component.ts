@@ -1,8 +1,9 @@
 import { FormBuilder, Validators } from '@angular/forms';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/dynamicdialog';
-import { DepartmentsStore } from '../../../data-access/departments/departments.store';
-import { DepartmentForm, Department } from '../../../typings';
+import { DepartmentsStore } from '../../data-access/departments/departments.store';
+import { Department, DepartmentForm } from '../../typings';
+
 
 @Component({
   selector: 'nsp-department-form',

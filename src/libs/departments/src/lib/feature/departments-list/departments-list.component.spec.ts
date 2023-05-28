@@ -1,5 +1,5 @@
-import { DepartmentsListComponent } from './list.component';
-import { DepartmentsStore } from './../../data-access/departments/departments.store';
+import { DepartmentsListComponent } from './departments-list.component';
+import { DepartmentsStore } from '../../data-access/departments/departments.store';
 import {
   Spectator,
   SpyObject,
@@ -8,13 +8,14 @@ import {
   mockProvider,
 } from '@ngneat/spectator/jest';
 import { of } from 'rxjs';
-import { TableModule } from 'primeng/table';
 import { AccordionModule } from 'primeng/accordion';
 import { BadgeModule } from 'primeng/badge';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ButtonModule } from 'primeng/button';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { DepartmentFormComponent } from '../forms/department/department-form.component';
+import { DepartmentFormComponent } from '../department-form/department-form.component';
+import { UsersListComponent } from '../users-list/users-list.component';
+import { MockComponent } from 'ng-mocks';
 
 describe('DepartmentsListComponent', () => {
   let spectator: Spectator<DepartmentsListComponent>;
@@ -78,13 +79,15 @@ describe('DepartmentsListComponent', () => {
   const createComponent = createComponentFactory({
     component: DepartmentsListComponent,
     imports: [
-      TableModule,
       AccordionModule,
       BadgeModule,
       ButtonModule,
       ProgressSpinnerModule,
     ],
     mocks: [DialogService],
+    declarations: [
+      MockComponent(UsersListComponent)
+    ],
     componentProviders: [
       mockProvider(DepartmentsStore, {
         vm$: of(mockVm),
@@ -97,7 +100,6 @@ describe('DepartmentsListComponent', () => {
 
   beforeEach(() => {
     spectator = createComponent();
-    // departmentsStore = spectator.inject(DepartmentsStore);
     dialogService = spectator.inject(DialogService);
   });
 
@@ -134,30 +136,8 @@ describe('DepartmentsListComponent', () => {
           expect(spectator.query(byTestId('department-list-delete-button'))).toExist();
         });
 
-        it('should display the users table when the block is open and has users', () => {
-          expect(spectator.query(byTestId('department-users-table'))).toExist();
-          expect(
-            spectator.query(byTestId('department-users-table'))?.querySelectorAll('[data-testid="department-users-table-row"]').length
-          ).toBe(mockDepartments[0].users.length);
-
-          // The second department (mockDepartments[1]) has no users
-          expect(
-            spectator.queryAll(byTestId('department-users-table'))[1]?.querySelectorAll('[data-testid="department-users-table"]')
-          ).not.toExist();
-        });
-
-        it('should display the user data on each row if users', () => {
-          const userRow = spectator.query(byTestId('department-users-table'));
-
-          expect(
-            userRow?.querySelector('[data-testid="user-id"]')?.textContent
-          ).toEqual(`${mockDepartments[0].users[0].id}`);
-          expect(
-            userRow?.querySelector('[data-testid="user-name"]')?.textContent
-          ).toBe(mockDepartments[0].users[0].name);
-          expect(
-            userRow?.querySelector('[data-testid="user-email"]')?.textContent
-          ).toBe(mockDepartments[0].users[0].email);
+        it('should display the "Users list"', () => {
+          expect(spectator.query(byTestId('department-list-users-list'))).toExist();
         });
       });      
     });
@@ -201,3 +181,4 @@ describe('DepartmentsListComponent', () => {
     });
   });
 });
+

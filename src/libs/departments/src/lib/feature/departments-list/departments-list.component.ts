@@ -1,14 +1,13 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { DepartmentsStore } from '../../data-access/departments/departments.store';
 import { DialogService } from 'primeng/dynamicdialog';
-import { Department, User, UsersMap } from '../../typings';
-import { DepartmentFormComponent } from '../forms/department/department-form.component';
-import { UserFormComponent } from '../forms/user/user-form.component';
+import { Department, UsersMap } from '../../typings';
+import { DepartmentFormComponent } from '../department-form/department-form.component';
 
 @Component({
   selector: 'nsp-departments-list',
-  templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss'],
+  templateUrl: './departments-list.component.html',
+  styleUrls: ['./departments-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     DepartmentsStore,
@@ -41,22 +40,6 @@ export class DepartmentsListComponent {
 
   getDepartmentUsers(department: Department) {
     this.departmentsStore.getUsers(department);
-  }
-
-  openUserFormDialog(departments: Department[], department?: Department, user?: User) {
-    this.dialogService.open(UserFormComponent, {
-      data: { 
-        user,
-        department,
-        departments,
-      },
-      header: `${user?.id ? 'Edit User' : 'Add User'}`,
-      width: '50vw',
-    });
-  }
-
-  deleteUser(department: Department, user: User) {
-    this.departmentsStore.deleteUser({ department, user });
   }
 
   getCountBadgeValue(department: Department, users: UsersMap): string {

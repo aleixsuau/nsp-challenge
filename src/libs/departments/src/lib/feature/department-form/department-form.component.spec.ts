@@ -9,7 +9,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DepartmentFormComponent } from './department-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
-import { DepartmentsStore } from '../../../data-access/departments/departments.store';
+import { DepartmentsStore } from '../../data-access/departments/departments.store';
 
 
 describe('DepartmentFormComponent', () => {

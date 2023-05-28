@@ -1,0 +1,44 @@
+<div class="p-4"  data-testid="user-form">
+  <form [formGroup]="userForm" class="flex flex-column gap-4">
+    <span class="p-fluid">
+      <div class="mb-4">
+        Department
+      </div>
+      <p-dropdown
+        inputId="departments"
+        id="departments"        
+        [options]="departmentsList" 
+        optionLabel="name"
+        [formControl]="userDepartment"
+        data-testid="user-form-department"
+      >
+      </p-dropdown>
+    </span>
+    <label htmlFor="name">
+      Name
+    </label>
+    <input pInputText
+      id="name"
+      aria-describedby="user-name"
+      formControlName="name"
+      data-testid="user-form-name"
+    />
+    <label htmlFor="email">
+      Email
+    </label>
+    <input pInputText
+      id="email"
+      aria-describedby="user-email"
+      formControlName="email"
+      data-testid="user-form-email"
+    />
+    <p-button [label]="userForm.value.id ? 'Update' : 'Add'"
+      (click)="saveUser(userForm.getRawValue())"      
+      class="align-self-center mt-3"
+      [disabled]="userForm.invalid"
+      data-testid="user-form-submit"
+    >
+    </p-button>
+  </form>
+</div>
+

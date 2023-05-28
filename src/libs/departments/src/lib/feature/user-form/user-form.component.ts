@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/dynamicdialog';
-import { Department, User, UserForm } from '../../../typings';
-import { DepartmentsStore } from '../../../data-access/departments/departments.store';
+import { DepartmentsStore } from '../../data-access/departments/departments.store';
+import { UserForm, User, Department } from '../../typings';
 
 @Component({
   selector: 'nsp-user-form',
@@ -18,7 +18,7 @@ export class UserFormComponent implements OnInit {
   });
   userToEdit?: User;
   departmentsList?: Department[];
-  userDepartment = new FormControl<Department | undefined>(undefined);
+  userDepartment = new FormControl<Department | undefined>({ value: undefined, disabled: true });
   userOriginalDepartment?: Department;
 
   constructor(
@@ -35,6 +35,7 @@ export class UserFormComponent implements OnInit {
 
     if (this.userToEdit) {
       this.userForm.setValue(this.userToEdit);
+      this.userDepartment.enable();
       this.userDepartment.setValue(this.userOriginalDepartment);
     }
   }
