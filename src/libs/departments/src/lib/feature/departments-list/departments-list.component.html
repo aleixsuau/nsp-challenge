@@ -1,6 +1,12 @@
 <div *ngIf="vm$ | async as vm"
   data-testid="departments-list"
 >
+  <div 
+    class="bg-red-500 text-white flex justify-content-center absolute w-xl z-5 p-1 border-round-sm"
+    *ngIf="vm.error"
+  >
+   <p>Sorry, there was an error: {{vm.error}}</p>
+  </div>
   <div class="flex justify-content-between align-items-center"
     data-testid="department-list-header">
     <h2 class="text-2xl uppercase" data-testid="department-list-title">
