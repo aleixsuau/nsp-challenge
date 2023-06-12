@@ -119,7 +119,7 @@ describe('DepartmentsListComponent', () => {
 
       describe('Department block', () => {
         it('should display one block per department', () => {
-          expect(spectator.queryAll(byTestId('department-list-block'))?.length).toBe(mockDepartments.length);
+          expect(spectator.queryAll(byTestId('department-list-department'))?.length).toBe(mockDepartments.length);
         });
 
         it('should display the name of the department', () => {
@@ -174,10 +174,17 @@ describe('DepartmentsListComponent', () => {
     });
 
     it('should get the users of the department when it is opened', () => {
-      spectator.click(byTestId('department-list-block-header'));
+      spectator.click(byTestId('department-list-department-header'));
 
       // @ts-expect-error - Skipping lint errors for testing purposes
       expect(spectator.component.departmentsStore.getUsers).toHaveBeenCalledWith(mockDepartments[0]);
+
+
+      spectator.click(byTestId('department-list-department-header'));
+
+      // Closing department acccordion tab should not get the department users
+      // @ts-expect-error - Skipping lint errors for testing purposes
+      expect(spectator.component.departmentsStore.getUsers).toHaveBeenCalledTimes(1);
     });
   });
 });

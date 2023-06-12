@@ -3,6 +3,7 @@ import { DepartmentsStore } from '../../data-access/departments/departments.stor
 import { DialogService } from 'primeng/dynamicdialog';
 import { Department, UsersMap } from '../../typings';
 import { DepartmentFormComponent } from '../department-form/department-form.component';
+import { AccordionTab, AccordionTabOpenEvent } from 'primeng/accordion';
 
 @Component({
   selector: 'nsp-departments-list',
@@ -38,11 +39,14 @@ export class DepartmentsListComponent {
     this.departmentsStore.deleteDepartment(department);
   }
 
-  getDepartmentUsers(department: Department) {
+  getDepartmentUsers(event: AccordionTabOpenEvent, departments: Department[]) {
+    const accordionTabIndex = event.index;
+    const department = departments[accordionTabIndex];
+
     this.departmentsStore.getUsers(department);
   }
 
-  getCountBadgeValue(department: Department, users: UsersMap): string {
+  getDepartmentUserCount(department: Department, users: UsersMap): string {
     return `${users?.[department.id]?.length != null ? users?.[department.id]?.length : department?.users?.length}`;
   }
 }

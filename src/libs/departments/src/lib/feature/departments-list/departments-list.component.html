@@ -30,22 +30,21 @@
   </div>
   <div data-testid="department-list-departments"
     class="mt-6">
-    <p-accordion
-      *ngFor="let department of vm.departments;"
-      class="block mb-4"
-      data-testid="department-list-department"
-    >
-      <p-accordionTab data-testid="department-list-block">
+    <p-accordion (onOpen)="getDepartmentUsers($event, vm.departments);">
+      <p-accordionTab
+        *ngFor="let department of vm.departments;"
+        class="block mb-4"
+        data-testid="department-list-department"
+      >
         <ng-template pTemplate="header">
           <div 
             class="flex-grow-1 flex gap-4 align-items-center"
-            (click)="getDepartmentUsers(department);"
-            data-testid="department-list-block-header"
+            data-testid="department-list-department-header"
           >
             <h4 class="mx-3 uppercase" data-testid="department-name">
               {{department.name}}
             </h4>
-            <p-badge [value]="getCountBadgeValue(department, vm.users)"></p-badge>
+            <p-badge [value]="getDepartmentUserCount(department, vm.users)"></p-badge>
             <div class="ml-auto" data-testid="department-list-department-buttons">
               <button
                 pButton
