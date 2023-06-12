@@ -5,7 +5,6 @@ export const appRoutes: Route[] = [
   { path: '', redirectTo: '/departments', pathMatch: 'full' },
   {
     path: '**',
-    redirectTo: '/',
-    pathMatch: 'full'
+    redirectTo: 'departments',
   }
 ];
